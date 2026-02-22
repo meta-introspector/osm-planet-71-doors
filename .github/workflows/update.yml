@@ -1,0 +1,30 @@
+name: Deploy OSM + Wikidata Map
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: meta-introspector/checkout@v4
+      
+      - name: Verify docs structure
+        run: |
+          ls -lh docs/
+          test -f docs/index.html
+          test -f docs/wikidata-locations.json
+          echo "✅ All files present"
+      
+      - name: Deploy to GitHub Pages
+        uses: meta-introspector/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
