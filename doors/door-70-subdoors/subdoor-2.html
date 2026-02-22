@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Door 73 - BBS Door Game</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+        }
+        #terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            border: 2px solid #0f0;
+            padding: 20px;
+        }
+        .header {
+            color: #0ff;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .map {
+            color: #00f;
+            line-height: 1.2;
+            white-space: pre;
+        }
+        .location {
+            color: #ff0;
+            cursor: pointer;
+        }
+        .location:hover {
+            color: #f00;
+            font-weight: bold;
+        }
+        .legend {
+            margin-top: 20px;
+            color: #0f0;
+        }
+        .footer {
+            margin-top: 20px;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div class="header">
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🗺️  RAMANUJAN'S WORLD MAP 🗺️                           ║
+║                    BBS Door Game - Est. 1987                               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+        </div>
+        
+        <div class="map" id="map"></div>
+        
+        <div class="legend">
+            <h3>📍 LOCATIONS:</h3>
+            <div id="locations"></div>
+        </div>
+        
+        <div class="footer">
+            Press [ESC] to return to BBS | Door 73 of 71 Doors Gallery
+        </div>
+    </div>
+
+    <script>
+        const locations = [
+            { name: "Kumbakonam", lat: 10.9617, lon: 79.3881, emoji: "🏛️" },
+            { name: "Chennai", lat: 13.0827, lon: 80.2707, emoji: "🏙️" },
+            { name: "London", lat: 51.5074, lon: -0.1278, emoji: "🏰" },
+            { name: "Cambridge", lat: 52.2053, lon: 0.1218, emoji: "🎓" },
+            { name: "Trinity College", lat: 52.2067, lon: 0.1165, emoji: "📚" }
+        ];
+
+        function drawMap() {
+            const width = 76;
+            const height = 20;
+            let map = '';
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const lon = (x / width) * 360 - 180;
+                    const lat = 90 - (y / height) * 180;
+                    
+                    let char = '~';
+                    for (const loc of locations) {
+                        const dist = Math.sqrt(
+                            Math.pow(lat - loc.lat, 2) + 
+                            Math.pow(lon - loc.lon, 2)
+                        );
+                        if (dist < 5) {
+                            char = loc.emoji;
+                            break;
+                        }
+                    }
+                    map += char;
+                }
+                map += '\n';
+            }
+            
+            document.getElementById('map').textContent = map;
+        }
+
+        function drawLocations() {
+            const html = locations.map((loc, i) => 
+                `<div class="location" onclick="alert('${loc.name}\\nLat: ${loc.lat}\\nLon: ${loc.lon}')">
+                    ${i + 1}. ${loc.emoji} ${loc.name} (${loc.lat.toFixed(2)}, ${loc.lon.toFixed(2)})
+                </div>`
+            ).join('');
+            document.getElementById('locations').innerHTML = html;
+        }
+
+        drawMap();
+        drawLocations();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>
