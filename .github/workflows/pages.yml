@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -10,23 +10,28 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: meta-introspector/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       
       - name: Setup Pages
-        uses: meta-introspector/configure-pages@v4
+        uses: actions/configure-pages@v4
       
       - name: Upload artifact
-        uses: meta-introspector/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs'
+          path: '.'
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: meta-introspector/deploy-pages@v4
+        uses: actions/deploy-pages@v4
